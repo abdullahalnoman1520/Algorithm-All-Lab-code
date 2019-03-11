@@ -1,2 +1,1 @@
-# insertion-sort
-algorithm lab class
+Algorithm lab class

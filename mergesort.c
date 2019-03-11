@@ -6,22 +6,71 @@
 #define SIZE 100000
 #define SIZE1 10
 
-void insertion_sort(int a[],int n)
+void merge(int arr[], int l, int m, int r)
 {
-    int i,j;
-    int key;
-    for (i=1;i<=n;i++)
+    int i, j, k;
+    int n1 = m - l + 1;
+    int n2 =  r - m;
+
+
+    int L[n1], R[n2];
+
+    for (i = 0; i < n1; i++)
+        L[i] = arr[l + i];
+    for (j = 0; j < n2; j++)
+        R[j] = arr[m + 1 + j];
+
+
+    i = 0;
+    j = 0;
+    k = l;
+    while (i < n1 && j < n2)
     {
-        key=a[i];
-        j=i-1;
-        while(j>=0 && a[j]>key)
+        if (L[i] <= R[j])
         {
-            a[j+1]=a[j];
-            j--;
+            arr[k] = L[i];
+            i++;
         }
-        a[j+1]=key;
+        else
+        {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+
+    while (i < n1)
+    {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+
+
+    while (j < n2)
+    {
+        arr[k] = R[j];
+        j++;
+        k++;
     }
 }
+
+
+void marge_sort(int arr[], int l, int r)
+{
+    if(l < r)
+    {
+
+        int m = l+(r-l)/2;
+
+
+        marge_sort(arr, l, m);
+        marge_sort(arr, m+1, r);
+        merge(arr, l, m, r);
+    }
+}
+
 int main()
 {
     struct timeval time_v,time_v1;
@@ -39,7 +88,7 @@ int main()
     }
     gettimeofday(&time_v, &time_z);
 
-    insertion_sort(a1,SIZE1);
+    marge_sort(a1,0,SIZE1-1);
 
     tm=localtime(&time_v.tv_sec);
     printf(" 10 input  to do the sorting took %d m sec \n",tm->tm_sec);
@@ -49,8 +98,9 @@ int main()
 
     for (i=0;i<SIZE;i++)
     {
-      fprintf(fptr,"%d, ",rand()%1000+1);
+      fprintf(fptr,"%d\n",rand()%1000+1);
     }
+
     fflush(fptr);
     fclose(fptr);
     fptr = fopen("program1.txt","r");
@@ -60,18 +110,19 @@ int main()
     for(i=0;i<SIZE;i++)
     {
        fscanf(fptr,"%d",&a[i]);
+
     }
     fclose(fptr);
 
-    insertion_sort(a,SIZE);
+    marge_sort(a,0,SIZE-1);
 
     end = clock();
-    fptr=fopen("out.text","w");
+    fptr=fopen("out.txt","w");
 
 
     for (i=0;i<SIZE;i++)
     {
-        fprintf(fptr,"%d, ",a[i]);
+        fprintf(fptr,"%d\n",a[i]);
     }
     fclose(fptr);
     total = ((double)(end-start))*1000/CLOCKS_PER_SEC;
